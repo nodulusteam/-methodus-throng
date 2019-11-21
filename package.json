@@ -1,6 +1,6 @@
 {
   "name": "@methodus/throng",
-  "version": "0.0.1-beta",
+  "version": "0.0.3",
   "description": "",
   "typings": "build/index.d.ts",
   "main": "build/index.js",
@@ -12,19 +12,24 @@
     "docs": "typedoc",
     "test": "npm run build && jest"
   },
-  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nodulusteam/-methodus-throng"
+  },
+  "author": "nodulus",
   "license": "ISC",
   "devDependencies": {
-    "jest": "^24.9.0",
-    "reflect-metadata": "^0.1.13",
-    "typescript": "^3.7.2",
     "@types/cache-manager": "^2.10.0",
     "@types/jest": "^24.0.23",
     "@types/node": "^12.12.11",
+    "jest": "^24.9.0",
+    "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.0",
-    "ts-jest": "^24.1.0"
+    "ts-jest": "^24.1.0",
+    "typescript": "^3.7.2"
   },
   "dependencies": {
+    "debug": "^4.1.1",
     "node-cache": "^5.0.2",
     "p-limit": "^2.2.1"
   }

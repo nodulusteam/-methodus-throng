@@ -1,0 +1,31 @@
+{
+  "name": "@methodus/throng",
+  "version": "0.0.1-beta",
+  "description": "",
+  "typings": "build/index.d.ts",
+  "main": "build/index.js",
+  "scripts": {
+    "watch": "tsc -w",
+    "build": "npm run clear && tsc",
+    "serve": "webpack-dev-server",
+    "clear": "rimraf build",
+    "docs": "typedoc",
+    "test": "npm run build && jest"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^24.9.0",
+    "reflect-metadata": "^0.1.13",
+    "typescript": "^3.7.2",
+    "@types/cache-manager": "^2.10.0",
+    "@types/jest": "^24.0.23",
+    "@types/node": "^12.12.11",
+    "rimraf": "^3.0.0",
+    "ts-jest": "^24.1.0"
+  },
+  "dependencies": {
+    "node-cache": "^5.0.2",
+    "p-limit": "^2.2.1"
+  }
+}

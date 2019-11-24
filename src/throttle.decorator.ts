@@ -8,9 +8,11 @@ const debug = require('debug')('methodus:throng:throttle');
 export function Throttle(limit: number) {
     const limiter = Limit(limit);
     return (target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) => {
-        if (process.env.THRONG_OFF) {
+        if (process.env.THRONG_OFF && process.env.THRONG_OFF === 'true') {
             debug(`Throng is off`);
             return;
+        } else {
+            debug(`Throng is on`);
         }
 
         debug(`${propertyKey}::created a limitter for (${limit})`);
@@ -26,7 +28,7 @@ export function Throttle(limit: number) {
             const result = await new Promise(async (resolve, reject) => {
                 limiter(async () => {
                     debug(`${propertyKey}::executing`);
-                    let result = await originalMethod.apply(_self, args);
+                    let result = originalMethod.apply(_self, args);
                     debug(`${propertyKey}::complete`);
                     if (result.then) {
                         debug(`resolving promise ${propertyKey}`);

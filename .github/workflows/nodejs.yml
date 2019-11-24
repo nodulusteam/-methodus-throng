@@ -17,9 +17,12 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+    - name: GitHub Action for Yarn
+      uses: Borales/actions-yarn@v2.1.0
+
     - name: npm install, build, and test
       run: |
-        npm ci
+        yarn install
         npm run build --if-present
         npm test
       env:

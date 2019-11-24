@@ -44,7 +44,7 @@ export function Cache(ttl: number, expireThrottle: number = 1) {
         // save a reference to the original method
         const originalMethod = descriptor.value;
         const valueFunction = async function (...args: any[]) {
-            const _self = this as any;
+            const _self = this;
             let hash = crypto.createHash('md5').update(args.join('-')).digest('hex');
             const key = `${propertyKey}-${hash}`;
             debug(`Getting key ${key}`);

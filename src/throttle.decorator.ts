@@ -24,20 +24,20 @@ export function Throttle(limit: number) {
             debug(`${propertyKey}:: >> limits activeCount:(${limiter.activeCount})`);
             debug(`${propertyKey}:: >> limits pendingCount:(${limiter.pendingCount})`);
 
-            const _self = this as any;
+            const _self = this;
             const result = await new Promise(async (resolve, reject) => {
                 limiter(async () => {
                     debug(`${propertyKey}::executing`);
-                    let result = originalMethod.apply(_self, args);
+                    let functionResult = originalMethod.apply(_self, args);
                     debug(`${propertyKey}::complete`);
-                    if (result.then) {
+                    if (functionResult.then) {
                         debug(`resolving promise ${propertyKey}`);
-                        result = await result;
+                        functionResult = await functionResult;
                     }
                     debug(`${propertyKey}:: << limits activeCount:(${limiter.activeCount})`);
                     debug(`${propertyKey}:: << limits pendingCount:(${limiter.pendingCount})`);
 
-                    resolve(result);
+                    resolve(functionResult);
                 });
             });
             return result;

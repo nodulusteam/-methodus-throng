@@ -10,7 +10,7 @@
     "serve": "webpack-dev-server",
     "clear": "rimraf build",
     "docs": "typedoc",
-    "test": "npm run build && jest"
+    "test": "cross-env DEBUG=methodus:* THRONG_OFF=true npm run build && jest"
   },
   "repository": {
     "type": "git",
@@ -29,6 +29,7 @@
     "typescript": "^3.7.2"
   },
   "dependencies": {
+    "cross-env": "^6.0.3",
     "debug": "^4.1.1",
     "node-cache": "^5.0.2",
     "p-limit": "^2.2.1"

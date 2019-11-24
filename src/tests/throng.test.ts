@@ -22,23 +22,14 @@ for (let counter = 0; counter < 2; counter++) {
 
     await Promise.all(promises);
 
-
-    // promises = [];
-    // for (const test of testArs) {
-    //     promises.push(instance.shouldTrottle(test[0], test[1], test[2]));
-    // }
-    // console.log('promises', promises.length);
-    // await Promise.all(promises);
-    // console.log(TESTHITS)
+ 
 
     setInterval(async () => {
         promises = [];
         for (const test of testArs) {
             promises.push(instance.shouldCache(test[0], test[1], test[2]));
         }
-        console.log('promises', promises.length);
         await Promise.all(promises);
-        console.log(TESTHITS);
 
     }, 1000 * 30)
 })();

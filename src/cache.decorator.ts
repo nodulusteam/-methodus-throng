@@ -7,7 +7,7 @@ import Limit from 'p-limit';
 
 
 
-const memoryCache = new NodeCache({ deleteOnExpire: true, checkperiod: 60, useClones: false });
+const memoryCache = new NodeCache({ deleteOnExpire: true, checkperiod: 10, useClones: false });
 memoryCache.on('expired', async (key: string, value: CacheItem) => {
     debug(`expired key: ${key}, at ${new Date()}`);
     value.limiter(async () => {
@@ -17,6 +17,8 @@ memoryCache.on('expired', async (key: string, value: CacheItem) => {
 });
 
 debug('Cache initiated.');
+
+export const Store = memoryCache;
 
 export interface CacheItem {
     exec: Function;
@@ -32,9 +34,11 @@ export interface CacheItem {
 export function Cache(ttl: number, expireThrottle: number = 1) {
     const limiter = Limit(expireThrottle);
     return (target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) => {
-        if (process.env.THRONG_OFF) {
+        if (process.env.THRONG_OFF && process.env.THRONG_OFF === 'true') {
             debug(`Throng is off`);
             return;
+        } else {
+            debug(`Throng is on`);
         }
 
         // save a reference to the original method

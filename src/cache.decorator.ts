@@ -30,15 +30,18 @@ export interface CacheItem {
  *  @param {ttl} number - the duration of cache in seconds.
  */
 export function Cache(ttl: number, expireThrottle: number = 1) {
-
     const limiter = Limit(expireThrottle);
-
     return (target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) => {
+        if (process.env.THRONG_OFF) {
+            debug(`Throng is off`);
+            return;
+        }
+
         // save a reference to the original method
         const originalMethod = descriptor.value;
         const valueFunction = async function (...args: any[]) {
             const _self = this as any;
-            let hash = crypto.createHash('md5').update(args.join('-')).digest("hex");
+            let hash = crypto.createHash('md5').update(args.join('-')).digest('hex');
             const key = `${propertyKey}-${hash}`;
             debug(`Getting key ${key}`);
 
@@ -53,7 +56,13 @@ export function Cache(ttl: number, expireThrottle: number = 1) {
             if (!cacheResult || !cacheResult.value) {
                 debug(`Cache empty for  cache key ${key}`);
                 debug(`applying method ${propertyKey}`);
-                const result = await originalMethod.apply(_self, args);
+                let result = originalMethod.apply(_self, args);
+                //
+                if (result.then) {
+                    debug(`resolving promise ${propertyKey}`);
+                    result = await result;
+                }
+
                 debug(`method ${propertyKey} completed`);
                 debug(`set to cache ${key}`);
 

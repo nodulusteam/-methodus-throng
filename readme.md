@@ -47,3 +47,6 @@ methodus:throng:*
 methodus:throng:cache
 methodus:throng:throttle
 ```
+
+### Disable
+pass `THRONG_OFF` to completly disable

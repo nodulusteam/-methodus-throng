@@ -1,13 +1,13 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=nodulusteam_-methodus-throng&metric=alert_status)](https://sonarcloud.io/dashboard?id=nodulusteam_-methodus-throng)
-
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=nodulusteam_-methodus-throng&metric=coverage)](https://sonarcloud.io/dashboard?id=nodulusteam_-methodus-throng)
-
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=nodulusteam_-methodus-throng&metric=bugs)](https://sonarcloud.io/dashboard?id=nodulusteam_-methodus-throng)
 
 ## Throng
 
-*Throng* decorators enable caching & throttling of class methods in your app.
+**Throng** decorators enable *caching & throttling* of class methods in your app.
 
+> *meaning:* a large, densely packed crowd of people or animals.
+> "he pushed his way through the throng"
 
 ### Install
 `npm i @methodus/throng`

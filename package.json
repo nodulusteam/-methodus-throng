@@ -20,17 +20,16 @@
   "author": "nodulus",
   "license": "ISC",
   "devDependencies": {
-    "@types/cache-manager": "^2.10.0",
     "@types/jest": "^24.0.23",
     "@types/node": "^12.12.11",
     "jest": "^24.9.0",
-    "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.0",
     "ts-jest": "^24.1.0",
+    "cross-env": "^6.0.3",
     "typescript": "^3.7.2"
   },
   "dependencies": {
-    "cross-env": "^6.0.3",
+    "reflect-metadata": "^0.1.13",
     "debug": "^4.1.1",
     "node-cache": "^5.0.2",
     "p-limit": "^2.2.1"

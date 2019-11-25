@@ -1,8 +1,8 @@
 import 'reflect-metadata';
-import NodeCache from 'node-cache';
+const NodeCache = require('node-cache');
 const debug = require('debug')('methodus:throng:cache');
 const crypto = require('crypto');
-import Limit from 'p-limit';
+const Limit = require('p-limit');
 
 
 
@@ -51,7 +51,7 @@ export function Cache(ttl: number, expireThrottle: number = 1) {
 
             let cacheResult: CacheItem | undefined = undefined;
             try {
-                cacheResult = memoryCache.get<CacheItem>(key);
+                cacheResult = memoryCache.get(key);
             } catch (error) {
                 debug(`error getting from cache`);
                 debug(error);

@@ -1,8 +1,8 @@
 import 'reflect-metadata';
-import Limit from 'p-limit';
+const Limit = require('p-limit');
 const debug = require('debug')('methodus:throng:throttle');
 
-/** the @Throttle decorator activates caching using a key, joined from the arguments
+/** the @Throttle decorator activates caching using a key, joined from the arguments and hashed
  *  @param {limit} number - the maximum allowed concurrent executions for the method.
  */
 export function Throttle(limit: number) {

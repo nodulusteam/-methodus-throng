@@ -54,5 +54,14 @@ methodus:throng:cache
 methodus:throng:throttle
 ```
 
+### Options
+`CACHE_CHECK_PERIOD`:number - the interval for cache expiry check.
+
+`CACHE_DELETE_ON_EXPIRE`: boolean-string  - whether to delete the objects as they expire. 
+
+`CACHE_USE_CLONES`: boolean-string - whether to use the original objects in the cache collection or make copies.
+
+> *boolean-string* means 'true' | 'false'
+
 ### Disable
 pass `THRONG_OFF` to completly disable

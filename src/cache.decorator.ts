@@ -5,9 +5,17 @@ const crypto = require('crypto');
 const Limit = require('p-limit');
 
 
+const CACHE_CHECK_PERIOD = process.env.CACHE_CHECK_PERIOD || 60;
+const CACHE_DELETE_ON_EXPIRE = process.env.CACHE_DELETE_ON_EXPIRE !== 'false' ? true : false;
+const CACHE_USE_CLONES = process.env.CACHE_USE_CLONES === 'true' ? true : false;
 
 
-const memoryCache = new NodeCache({ deleteOnExpire: true, checkperiod: 10, useClones: false });
+const memoryCache = new NodeCache({
+    deleteOnExpire: CACHE_DELETE_ON_EXPIRE,
+    checkperiod: CACHE_CHECK_PERIOD,
+    useClones: CACHE_USE_CLONES
+});
+
 memoryCache.on('expired', async (key: string, value: CacheItem) => {
     debug(`expired key: ${key}, at ${new Date()}`);
     value.limiter(async () => {
@@ -15,11 +23,9 @@ memoryCache.on('expired', async (key: string, value: CacheItem) => {
         return await value.exec(...value.args);
     });
 });
-
 debug('Cache initiated.');
 
 export const Store = memoryCache;
-
 export interface CacheItem {
     exec: Function;
     args: any;

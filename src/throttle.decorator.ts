@@ -12,7 +12,7 @@ export function Throttle(limit: number) {
             debug(`Throng is off`);
             return;
         } else {
-            debug(`Throng is on`);
+            debug(`Throng throttle applied to ${target.name}.${propertyKey}`);
         }
 
         debug(`${propertyKey}::created a limitter for (${limit})`);

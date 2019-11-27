@@ -37,21 +37,27 @@ export interface CacheItem {
 /** the @Cache decorator activates caching using a key, joined from the arguments
  *  @param {ttl} number - the duration of cache in seconds.
  */
-export function Cache(ttl: number, expireThrottle: number = 1) {
+export function Cache(ttl: number, expireThrottle: number = 1, keyLength?: number) {
     const limiter = Limit(expireThrottle);
     return (target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) => {
         if (process.env.THRONG_OFF && process.env.THRONG_OFF === 'true') {
             debug(`Throng is off`);
             return;
         } else {
-            debug(`Throng is on`);
+            debug(`Throng cache applied to ${target.name}.${propertyKey}`);
         }
 
         // save a reference to the original method
         const originalMethod = descriptor.value;
         const valueFunction = async function (...args: any[]) {
             const _self = this;
-            let hash = crypto.createHash('md5').update(args.join('-')).digest('hex');
+
+            let keyArgs = args;
+            if (keyLength) {
+                keyArgs = args.splice(0, keyLength);
+            }
+
+            let hash = crypto.createHash('md5').update(keyArgs.join('-')).digest('hex');
             const key = `${propertyKey}-${hash}`;
             debug(`Getting key ${key}`);
 

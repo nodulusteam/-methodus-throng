@@ -19,7 +19,7 @@ export class TestClass {
     }
 
     @Throttle(1)
-    @Cache(5, 5, 2) //5 seconds cache
+    @Cache(5, 5, 0) //5 seconds cache
     public async shouldCache(key1: string, key2: string, key3: number): Promise<any> {
 
         await this.emitter.emit('hit', 'shouldCache');

@@ -1,6 +1,6 @@
 {
   "name": "@methodus/throng",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "",
   "typings": "build/index.d.ts",
   "main": "build/index.js",

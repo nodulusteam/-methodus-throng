@@ -51,10 +51,10 @@ export function Cache(ttl: number, expireThrottle: number = 1, keyLength?: numbe
         const originalMethod = descriptor.value;
         const valueFunction = async function (...args: any[]) {
             const _self = this;
-
+           
             let keyArgs = args;
             if (keyLength) {
-                keyArgs = args.splice(0, keyLength);
+                keyArgs = args.slice(0, keyLength);
             }
 
             let hash = crypto.createHash('md5').update(keyArgs.join('-')).digest('hex');

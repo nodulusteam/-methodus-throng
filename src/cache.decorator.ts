@@ -1,7 +1,20 @@
 import 'reflect-metadata';
+import { Logger } from './logger';
 const NodeCache = require('node-cache');
-const debug = require('debug')('methodus:throng:cache');
-const debugExpire = require('debug')('methodus:throng:expire');
+
+
+
+const debugInstance = require('debug')('methodus:throng:cache');
+let debug: Logger;
+if (debugInstance.enabled) {
+    debug = new Logger('methodus:throng:cache', debugInstance);
+} else {
+    debug = new Logger();
+}
+export const cacheLog = debug;
+// const debug = new Logger('methodus:throng:cache');
+
+
 const crypto = require('crypto');
 const Limit = require('p-limit');
 
@@ -19,21 +32,21 @@ const memoryCache = new NodeCache({
 });
 
 
-debugExpire(`CACHE_RELOAD_ON_EXPIRE: ${CACHE_RELOAD_ON_EXPIRE}`);
+debug.info(`CACHE_RELOAD_ON_EXPIRE: ${CACHE_RELOAD_ON_EXPIRE}`);
 
 memoryCache.on('expired', async (key: string, value: CacheItem) => {
-    debugExpire(`expired key: ${key}, at ${new Date()}`);
+    debug.info(`expired key: ${key}, at ${new Date()}`);
     memoryCache.del(key);
     if (CACHE_RELOAD_ON_EXPIRE) {
         value.limiter(async () => {
-            debugExpire(`executing refresh at: ${new Date()}`);
+            debug.info(`executing refresh at: ${new Date()}`);
             return await value.exec(...value.args);
         });
     }
 });
 
 
-debug('Cache initiated.');
+debug.info('Cache initiated.');
 
 export const Store = memoryCache;
 export interface CacheItem {
@@ -51,10 +64,10 @@ export function Cache(ttl: number, expireThrottle: number = 1, keyLength?: numbe
     const limiter = Limit(expireThrottle);
     return (target: any, propertyKey: string, descriptor: TypedPropertyDescriptor<any>) => {
         if (process.env.THRONG_OFF && process.env.THRONG_OFF === 'true') {
-            debug(`Throng is off`);
+            debug.info(`Throng is off`);
             return;
         } else {
-            debug(`Throng cache applied to ${propertyKey}`);
+            debug.info(`Throng cache applied to ${propertyKey}`);
         }
 
         // save a reference to the original method
@@ -67,38 +80,38 @@ export function Cache(ttl: number, expireThrottle: number = 1, keyLength?: numbe
                 keyArgs = args.slice(0, keyLength);
             }
 
-            debug(`${JSON.stringify(keyArgs)}`);
+            debug.info(`${propertyKey}::args -> ${JSON.stringify(keyArgs)}`);
 
             let hash = crypto.createHash('md5').update(keyArgs.join('-')).digest('hex');
             const key = `${propertyKey}-${hash}`;
-            debug(`Getting key ${key}`);
+            debug.info(`Getting key ${key}`);
 
             let cacheResult: CacheItem | undefined = undefined;
             try {
                 cacheResult = memoryCache.get(key);
             } catch (error) {
-                debug(`error getting from cache`);
-                debug(error);
+                debug.info(`error getting from cache`);
+                debug.error(error);
             }
 
             if (!cacheResult || !cacheResult.value) {
-                debug(`Cache empty for  cache key ${key}`);
-                debug(`applying method ${propertyKey}`);
+                debug.info(`Cache empty for  cache key ${key}`);
+                debug.info(`applying method ${propertyKey}`);
                 let result = originalMethod.apply(_self, args);
                 //
                 if (result.then) {
-                    debug(`resolving promise ${propertyKey}`);
+                    debug.info(`resolving promise ${propertyKey}`);
                     try {
                         result = await result;
                     } catch (error) {
-                        debug(error);
+                        debug.error(error);
                         throw (error);
                     }
 
                 }
 
-                debug(`method ${propertyKey} completed`);
-                debug(`set to cache ${key}`);
+                debug.info(`method ${propertyKey} completed`);
+                debug.info(`set to cache ${key}`);
 
                 if (setCacheFunction && typeof setCacheFunction === 'function') {
                     result = setCacheFunction(result);
@@ -119,15 +132,15 @@ export function Cache(ttl: number, expireThrottle: number = 1, keyLength?: numbe
                         hits: hitCounter
                     }, ttl);
 
-                    debug(`set to cache ${key} Ok`);
+                    debug.info(`set to cache ${key} Ok`);
                 } else {
-                    debug(`not setting to cache ${key} False`);
+                    debug.info(`not setting to cache ${key} False`);
                 }
 
                 return result;
             } else {
-                debug(`Got record for cache ${key}`);
-                debug(`increment hits. current value:  ${cacheResult.hits}`);
+                debug.info(`Got record for cache ${key}`);
+                debug.info(`increment hits. current value:  ${cacheResult.hits}`);
                 cacheResult.hits++;
                 return cacheResult.value;
             }

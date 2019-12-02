@@ -6,9 +6,13 @@
 
 **Throng** decorators enable *caching & throttling* of class methods in your app.
 
-
 > *meaning:* a large, densely packed crowd of people or animals.
 > "he pushed his way through the throng"
+
+
+An unintrusive approach for cache and throttle, that can be applied any where in a typescript application.
+
+
 
 ### Install
 `npm i @methodus/throng`
@@ -42,15 +46,8 @@ export class TestClass{
 }
 ```
 
-### Debug
-set "DEBUG" env variable to:
-```bash
-methodus:throng:*
-methodus:throng:cache
-methodus:throng:throttle
-```
 
-## @Cache( ttlTime: number, reloadThrottleLimit: number, keyLength?: number | Function, setCacheFunction?: Function)
+### **@Cache**( **ttlTime**: *number*, **reloadThrottleLimit**: *number*, **keyLength**?: *number* | Function, **setCacheFunction**?: *Function*)
 
 #### ttlTime
 Time in seconds until records expire.
@@ -73,6 +70,27 @@ the return value of the function will be stored in the cache, if `false` is retu
     }
 
 ```
+
+
+### **@Throttle**( **limit**: *number*)
+
+#### limit
+Time limit for concurrent execution of the method.
+
+
+### Global throttle limit
+By default Throttle uses a global limit object, if you wish to have seperated queues disable the default by passing:
+`THROTTLE_GLOBALLY` with the value `false`
+
+
+### Debug
+set "DEBUG" env variable to:
+```bash
+methodus:throng:*
+methodus:throng:cache
+methodus:throng:throttle
+```
+
 
 ### Env Options
 `CACHE_CHECK_PERIOD`:number - the interval for cache expiry check.

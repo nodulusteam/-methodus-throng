@@ -1,6 +1,7 @@
 process.env.THRONG_OFF = 'false';
 import { TestThrottleClass } from './tests/test-throttle.class';
 import { throttleLog } from './throttle.decorator';
+import { Logger } from './logger';
 
 describe('test throttle', () => {
     it('shouldTrottle', async () => {
@@ -30,7 +31,7 @@ describe('test throttle', () => {
         it('should log throttle', async () => {
             jest.setTimeout(1000 * 5);
             return await new Promise((resolve) => {
-                throttleLog.on('message', (args) => {                
+                throttleLog.on('message', (args) => {
                     expect(args[1]).toEqual('methodus:throng:throttle');
                     throttleLog.removeAllListeners();
                     resolve();
@@ -39,6 +40,25 @@ describe('test throttle', () => {
                 throttleLog.log('ok');
                 throttleLog.info('ok');
                 throttleLog.error('ok');
+            });
+        });
+
+
+        it('dumb logger', async () => {
+            jest.setTimeout(1000 * 5);
+            return await new Promise((resolve) => {
+
+                const logger = new Logger();
+
+                logger.on('message', (args) => {
+                    expect(args[1]).toEqual(undefined);
+                    logger.removeAllListeners();
+                    resolve();
+                });
+                logger.info('ok');
+                logger.log('ok');
+                logger.error('ok');
+
             });
         });
     });

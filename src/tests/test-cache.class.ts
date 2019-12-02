@@ -14,7 +14,7 @@ export class TestCacheClass {
         await this.emitter.emit('hit', 'shouldCache');
         return new Promise((resolve) => {
             setTimeout(() => {
-                console.log(`shouldCache::${key1}-${key2}-${key3}`);
+                //console.log(`shouldCache::${key1}-${key2}-${key3}`);
                 resolve(`${key1}-${key2}-${key3}`);
             }, 100);
         });
@@ -29,8 +29,8 @@ export class TestCacheClass {
         await this.emitter.emit('hit', 'shouldNotCache');
         return new Promise((resolve, reject) => {
             setTimeout(() => {
-                console.log(`shouldNotCache::${key1}-${key2}-${key3}`);
-                debugger;
+                // console.log(`shouldNotCache::${key1}-${key2}-${key3}`);
+
                 reject(new Error(`${key1}-${key2}-${key3}`));
             }, 1000 * 5);
         });

@@ -6,16 +6,12 @@
 
 **Throng** decorators enable *caching & throttling* of class methods in your app.
 
+
 > *meaning:* a large, densely packed crowd of people or animals.
 > "he pushed his way through the throng"
 
 ### Install
 `npm i @methodus/throng`
-
-
-### Install
-`npm i @methodus/throng`
-
 
 
 ### Usage
@@ -54,7 +50,7 @@ methodus:throng:cache
 methodus:throng:throttle
 ```
 
-### @Cache(ttlTime: number, reloadThrottleLimit: number, keyLength?: number | Function, setCacheFunction?: Function)
+## @Cache( ttlTime: number, reloadThrottleLimit: number, keyLength?: number | Function, setCacheFunction?: Function)
 
 #### ttlTime
 Time in seconds until records expire.
@@ -63,11 +59,22 @@ Time in seconds until records expire.
 A number value or a function returning it for the amount of concurrent executions when refreshing the cache record.
 
 #### keyLength
+A number value or a function returning a string key to be used as the cache item key. If a number is returned it will be used as the amount of arguments to take from the function args for the creation of the key hash.
+
 
 #### setCacheFunction
+the return value of the function will be stored in the cache, if `false` is returned nothing will be stored in cache.
 
+```javascript
+@Cache(120, 2, ,2 , (data)=>{ return somenewData }) 
+    public async cacheMethod(key1:string, key2:string: ){
+        /// function code
+        return;
+    }
 
-### Options
+```
+
+### Env Options
 `CACHE_CHECK_PERIOD`:number - the interval for cache expiry check.
 
 `CACHE_DELETE_ON_EXPIRE`=true: boolean-string  - whether to delete the objects as they expire. 

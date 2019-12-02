@@ -9,6 +9,7 @@ export class Logger extends EventEmitter {
             if (this.debugInstance) {
                 this.debugInstance(args);
             }
+
             this.emit('message', ['trace', this.namespace, ...args]);
         }
     }
@@ -17,6 +18,7 @@ export class Logger extends EventEmitter {
         if (this.debugInstance) {
             this.debugInstance(args);
         }
+
         this.emit('message', ['info', this.namespace, ...args]);
     }
 

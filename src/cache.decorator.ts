@@ -114,9 +114,10 @@ export function Cache(ttl: number, expireThrottle: number = 1, keyLength?: numbe
                 debug.info(`set to cache ${key}`);
 
                 if (setCacheFunction && typeof setCacheFunction === 'function') {
+                    debug.info(`applying setCacheFunction ${propertyKey}`);
                     result = setCacheFunction(result);
-
                 }
+
                 if (result) {
                     const existing = memoryCache.get(key);
                     let hitCounter = 1;

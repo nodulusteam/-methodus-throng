@@ -1,9 +1,9 @@
 process.env.THRONG_OFF = 'true';
 import { TestClass } from './test-disabled.class'
 
-describe('test throng', () => {
-  
-    it('test should not Cache', async () => {
+describe('Disable throng', () => {
+
+    it('Cache should be disabled', async () => {
         jest.setTimeout(1000 * 1000 * 1000);
         const testArs: any = [];
         let promises: any = [];
@@ -35,7 +35,7 @@ describe('test throng', () => {
     });
 
 
-    it('test shouldTrottle', async () => {
+    it('Throttle should be disabled', async () => {
         jest.setTimeout(1000 * 1000 * 1000);
         const testArs: any = [];
         let promises: any = [];

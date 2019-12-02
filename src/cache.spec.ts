@@ -1,6 +1,6 @@
 process.env.THRONG_OFF = 'false';
 import { TestCacheClass } from './tests/test-cache.class'
-import { Store, CacheItem } from './cache.decorator';
+import { Store, CacheItem, cacheLog } from './cache.decorator';
 
 describe('@Cache', () => {
 
@@ -54,7 +54,7 @@ describe('@Cache', () => {
     });
 
     it('test should not Cache', async () => {
-        debugger;
+
         jest.setTimeout(1000 * 1000 * 1000);
         const testArs: any = [];
         let promises: any = [];
@@ -110,4 +110,17 @@ describe('@Cache', () => {
             }, 1000 * 30);
         });
     });
+
+    it('Cache log', async () => {
+        jest.setTimeout(1000 * 5);
+        return await new Promise((resolve) => {
+            cacheLog.on('message', (args) => {
+                expect(args[1]).toEqual('methodus:throng:cache');
+                cacheLog.removeAllListeners();
+                resolve();
+            });
+            cacheLog.log('ok');
+        });
+    });
+
 });

@@ -12,7 +12,9 @@
             "program": "${workspaceRoot}/node_modules/jest/bin/jest",
             "stopOnEntry": false,
             "outputCapture": "std",
-            "args": [],
+            "args": [
+                "--verbose"
+            ],
             "sourceMaps": true,
             "cwd": "${workspaceRoot}",
             "runtimeExecutable": null,

@@ -18,8 +18,10 @@
             "runtimeExecutable": null,
             "env": {
                 "PORT": "4200",
-                "DEBUG": "none",
-                "NODE_ENV": "debug"
+                "DEBUG": "methodus:*",
+                "NODE_ENV": "debug",
+                "CACHE_RELOAD_ON_EXPIRE": "true",
+                "CACHE_DELETE_ON_EXPIRE": "true"
             }
         },
         {
@@ -29,15 +31,17 @@
             "type": "node",
             "program": "${workspaceRoot}/build/tests/throng.test.js",
             "stopOnEntry": false,
-            "outputCapture": "std",
+            "outputCapture": "console",
             "args": [],
             "sourceMaps": true,
             "cwd": "${workspaceRoot}",
             "runtimeExecutable": null,
             "env": {
                 "PORT": "4200",
-                "DEBUG": "none",
-                "NODE_ENV": "debug"
+                "DEBUG": "methodus:throng:*",
+                "NODE_ENV": "debug",
+                "CACHE_RELOAD_ON_EXPIRE": "true",
+                "CACHE_DELETE_ON_EXPIRE": "true"
             }
         },
     ]

@@ -1,7 +1,8 @@
 process.env.THRONG_OFF = 'true';
 import { TestClass } from './test-disabled.class'
 
-describe('test throng', () => {   
+describe('test throng', () => {
+  
     it('test should not Cache', async () => {
         jest.setTimeout(1000 * 1000 * 1000);
         const testArs: any = [];
@@ -13,8 +14,8 @@ describe('test throng', () => {
         const instance = new TestClass();
         const TESTHITS = (global as any).TESTHITS;
         instance.emitter.on('hit', (data: any) => {
-            TESTHITS[data] = Number(TESTHITS[data]) + 1 || 1;          
-           
+            TESTHITS[data] = Number(TESTHITS[data]) + 1 || 1;
+
         });
 
         for (const test of testArs) {

@@ -25,7 +25,7 @@ import {Cache, Throttle} from '@methodus/throng';
 export class TestClass{
 
     @Cache(120, 2) // 120 is the cache TTL, 2 is the number of concurrent executions for the expire rerun
-    public async cacheMethod(){
+    public async cacheMethod(key1:string, key2:string: ){
         /// function code
         return;
     }
@@ -54,12 +54,30 @@ methodus:throng:cache
 methodus:throng:throttle
 ```
 
+### @Cache(ttlTime: number, reloadThrottleLimit: number, keyLength?: number | Function, setCacheFunction?: Function)
+
+#### ttlTime
+Time in seconds until records expire.
+
+#### reloadThrottleLimit
+A number value or a function returning it for the amount of concurrent executions when refreshing the cache record.
+
+#### keyLength
+
+#### setCacheFunction
+
+
 ### Options
 `CACHE_CHECK_PERIOD`:number - the interval for cache expiry check.
 
-`CACHE_DELETE_ON_EXPIRE`: boolean-string  - whether to delete the objects as they expire. 
+`CACHE_DELETE_ON_EXPIRE`=true: boolean-string  - whether to delete the objects as they expire. 
 
-`CACHE_USE_CLONES`: boolean-string - whether to use the original objects in the cache collection or make copies.
+`CACHE_RELOAD_ON_EXPIRE`=false:  boolean-string - whether to execute the original function at the end of TTL.
+
+`CACHE_USE_CLONES`=true: boolean-string - whether to use the original objects in the cache collection or make copies.
+
+`THROTTLE_GLOBALLY`=true: boolean-string - use a global limit for all decorated methods (throttle);
+
 
 > *boolean-string* means 'true' | 'false'
 

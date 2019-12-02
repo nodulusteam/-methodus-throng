@@ -1,4 +1,6 @@
-import { TestClass } from "./test.class"
+import { TestThrottleClass } from './test-throttle.class';
+import { TestCacheClass } from './test-cache.class'
+import { Store } from '../index';
 
 const testArs: any = [];
 
@@ -9,7 +11,7 @@ for (let counter = 0; counter < 2; counter++) {
 (async () => {
     let promises: any = [];
 
-    const instance = new TestClass();
+    const instance = new TestCacheClass();
     const TESTHITS = (global as any).TESTHITS;
     instance.emitter.on('hit', (data: any) => {
         TESTHITS[data] = Number(TESTHITS[data]) + 1 || 1;
@@ -22,14 +24,26 @@ for (let counter = 0; counter < 2; counter++) {
 
     await Promise.all(promises);
 
- 
-
-    setInterval(async () => {
+    let getCounter = 0;
+    //counting up
+    let getInterval = setInterval(async () => {
+        //clearInterval(getInterval);
         promises = [];
         for (const test of testArs) {
             promises.push(instance.shouldCache(test[0], test[1], test[2]));
         }
-        await Promise.all(promises);
 
-    }, 1000 * 30)
+        const callResult = await Promise.all(promises);
+        console.log(callResult, getCounter);
+        getCounter++;
+        // if (getCounter > 3) {
+        //     clearInterval(getInterval);
+        //     // getInterval = setInterval(async () => {
+
+        //     // }, 1000 * 5)
+
+        // }
+    }, 1000 * 5);
+
+
 })();

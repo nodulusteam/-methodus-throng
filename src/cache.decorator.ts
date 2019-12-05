@@ -113,12 +113,13 @@ export function Cache(ttl: number, expireThrottle: number = 1, keyLength?: numbe
                 debug.info(`method ${propertyKey} completed`);
                 debug.info(`set to cache ${key}`);
 
+                let shouldCache = true;
                 if (setCacheFunction && typeof setCacheFunction === 'function') {
                     debug.info(`applying setCacheFunction ${propertyKey}`);
-                    result = setCacheFunction(result);
+                    shouldCache = setCacheFunction(result);
                 }
 
-                if (result) {
+                if (result && shouldCache) {
                     const existing = memoryCache.get(key);
                     let hitCounter = 1;
                     if (existing) {

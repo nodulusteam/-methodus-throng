@@ -1,4 +1,6 @@
 process.env.THRONG_OFF = 'false';
+process.env.DEBUG = 'methodus:throng:*';
+
 import { TestThrottleClass } from './tests/test-throttle.class';
 import { throttleLog } from './throttle.decorator';
 import { Logger } from './logger';
@@ -32,14 +34,17 @@ describe('test throttle', () => {
             jest.setTimeout(1000 * 5);
             return await new Promise((resolve) => {
                 throttleLog.on('message', (args) => {
+
+                    console.warn(args);
+
                     expect(args[1]).toEqual('methodus:throng:throttle');
                     throttleLog.removeAllListeners();
                     resolve();
                 });
 
-                throttleLog.log('ok');
-                throttleLog.info('ok');
-                throttleLog.error('ok');
+                throttleLog.log('log_ok');
+                throttleLog.info('info_ok');
+                throttleLog.error('error_ok');
             });
         });
 

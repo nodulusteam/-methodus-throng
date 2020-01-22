@@ -6,11 +6,14 @@ import { EventEmitter } from 'events';
 export class TestCacheClass {
     public emitter = new EventEmitter();
 
-    @Cache(10, 10, 3, (data) => {
-        return data;
+    @Cache(10, 10, (args) => {
+        return args.slice(0, args.length - 1).join('-');
+    }, (args, result) => {
+        return result;
+    }, (args) => {
+        return args[3] !== false;
     }) //5 seconds cache  
-    public async shouldCache(key1: string, key2: string, key3: number): Promise<any> {
-
+    public async shouldCache(key1: string, key2: string, key3: number, useCache: boolean = true): Promise<any> {
         await this.emitter.emit('hit', 'shouldCache');
         return new Promise((resolve) => {
             setTimeout(() => {
@@ -22,10 +25,12 @@ export class TestCacheClass {
 
 
 
-    @Cache(10, 10, () => 2, (data) => {
-        return data;
+    @Cache(10, 10, 2, (data) => {
+        return false;
+    }, (args) => {
+        return args[3] !== false;
     }) //10 seconds cache
-    public async shouldNotCache(key1: string, key2: string, key3: number): Promise<any> {
+    public async shouldNotCache(key1: string, key2: string, key3: number, useCache: boolean = true): Promise<any> {
         await this.emitter.emit('hit', 'shouldNotCache');
         return new Promise((resolve, reject) => {
             setTimeout(() => {

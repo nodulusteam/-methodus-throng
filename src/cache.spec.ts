@@ -3,55 +3,103 @@ import { TestCacheClass } from './tests/test-cache.class'
 import { Store, CacheItem, cacheLog } from './cache.decorator';
 
 describe('@Cache', () => {
+    describe('with cache override', () => {
+        it('test shouldCache function', async () => {
+            jest.setTimeout(1000 * 1000 * 1000);
+            const testArs: any = [];
+            let promises: any = [];
+            for (let counter = 0; counter < 4; counter++) {
+                testArs.push(['1111', counter, '2222', false]);
+            }
 
-    it('test shouldCache', async () => {
-        jest.setTimeout(1000 * 1000 * 1000);
-        const testArs: any = [];
-        let promises: any = [];
-        for (let counter = 0; counter < 2; counter++) {
-            testArs.push(['1111', counter, '2222']);
-        }
+            const instance = new TestCacheClass();
+            const TESTHITS = {};
+            instance.emitter.on('hit', (data: any) => {
+                TESTHITS[data] = Number(TESTHITS[data]) + 1 || 1;
+                //expect(TESTHITS[data]).toBeLessThanOrEqual(testArs.length);
+            });
 
-        const instance = new TestCacheClass();
-        const TESTHITS = (global as any).TESTHITS;
-        instance.emitter.on('hit', (data: any) => {
-            TESTHITS[data] = Number(TESTHITS[data]) + 1 || 1;
-            //expect(TESTHITS[data]).toBeLessThanOrEqual(testArs.length);
-        });
+            for (const test of testArs) {
+                promises.push(instance.shouldCache(test[0], test[1], test[2], test[3]));
+            }
 
-        for (const test of testArs) {
-            promises.push(instance.shouldCache(test[0], test[1], test[2]));
-        }
-
-        const results = await Promise.all(promises);
-        expect(results.length).toEqual(results.length);
-        let testIter = 0;
-        const testInterval = setInterval(async () => {
-            testIter++;
+            const results = await Promise.all(promises);
+            expect(results.length).toEqual(results.length);
             promises = [];
             for (const test of testArs) {
-                promises.push(instance.shouldCache(test[0], test[1], test[2]));
+                promises.push(instance.shouldCache(test[0], test[1], test[2], test[3]));
             }
 
             const results2 = await Promise.all(promises);
             expect(results2).toStrictEqual(results);
-            if (testIter > 4) {
-                clearInterval(testInterval);
-            }
-        }, 4000);
 
-        // Store.on('expired', async (key: string, value: CacheItem) => {          
-        //     TESTHITS[key] = Number(TESTHITS[key]) - 1 || 1;
-        // });
+            // Store.on('expired', async (key: string, value: CacheItem) => {          
+            //     TESTHITS[key] = Number(TESTHITS[key]) - 1 || 1;
+            // });
 
-        await new Promise((resolve) => {
-            setTimeout(() => {
-                expect(TESTHITS['shouldCache']).toEqual(testArs.length * 4);
-                expect(true).toEqual(true);
-                resolve();
-            }, 1000 * 30);
+            await new Promise((resolve) => {
+                setTimeout(() => {
+                    expect(TESTHITS['shouldCache']).toEqual((testArs.length * 2));
+                    expect(true).toEqual(true);
+                    resolve();
+                }, 1000 * 10);
+            });
         });
     });
+
+    describe('normal operation', () => {
+        it('test shouldCache function', async () => {
+            jest.setTimeout(1000 * 1000 * 1000);
+            const testArs: any = [];
+            let promises: any = [];
+            for (let counter = 0; counter < 2; counter++) {
+                testArs.push(['1111', counter, '2222', (counter % 2) === 0]);
+            }
+
+            const instance = new TestCacheClass();
+
+            const TESTHITS = {}
+            instance.emitter.on('hit', (data: any) => {
+                TESTHITS[data] = Number(TESTHITS[data]) + 1 || 1;
+                //expect(TESTHITS[data]).toBeLessThanOrEqual(testArs.length);
+            });
+
+            for (const test of testArs) {
+                promises.push(instance.shouldCache(test[0], test[1], test[2], test[3]));
+            }
+
+            const results = await Promise.all(promises);
+            expect(results.length).toEqual(results.length);
+            let testIter = 0;
+            const testInterval = setInterval(async () => {
+                testIter++;
+                promises = [];
+                for (const test of testArs) {
+                    promises.push(instance.shouldCache(test[0], test[1], test[2], test[3]));
+                }
+
+                const results2 = await Promise.all(promises);
+                expect(results2).toStrictEqual(results);
+                if (testIter > 4) {
+                    clearInterval(testInterval);
+                }
+            }, 4000);
+
+            // Store.on('expired', async (key: string, value: CacheItem) => {          
+            //     TESTHITS[key] = Number(TESTHITS[key]) - 1 || 1;
+            // });
+
+            await new Promise((resolve) => {
+                setTimeout(() => {
+                    expect(TESTHITS['shouldCache']).toEqual((testArs.length * 4) + 2);
+                    expect(true).toEqual(true);
+                    resolve();
+                }, 1000 * 30);
+            });
+        });
+
+    });
+
 
     it('test should not Cache', async () => {
 
@@ -63,7 +111,7 @@ describe('@Cache', () => {
         }
 
         const instance = new TestCacheClass();
-        const TESTHITS = (global as any).TESTHITS;
+        const TESTHITS = {};
         instance.emitter.on('hit', (data: any) => {
             TESTHITS[data] = Number(TESTHITS[data]) + 1 || 1;
             //expect(TESTHITS[data]).toBeLessThanOrEqual(testArs.length);
@@ -111,16 +159,6 @@ describe('@Cache', () => {
         });
     });
 
-    it('Cache log', async () => {
-        jest.setTimeout(1000 * 5);
-        return await new Promise((resolve) => {
-            cacheLog.on('message', (args) => {
-                expect(args[1]).toEqual('methodus:throng:cache');
-                cacheLog.removeAllListeners();
-                resolve();
-            });
-            cacheLog.log('ok');
-        });
-    });
+
 
 });

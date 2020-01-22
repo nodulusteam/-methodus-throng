@@ -2,6 +2,10 @@
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=nodulusteam_-methodus-throng&metric=coverage)](https://sonarcloud.io/dashboard?id=nodulusteam_-methodus-throng)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=nodulusteam_-methodus-throng&metric=bugs)](https://sonarcloud.io/dashboard?id=nodulusteam_-methodus-throng)
 
+
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/nodulusteam/-methodus-throng.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/nodulusteam/-methodus-throng/alerts/)
+[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/nodulusteam/-methodus-throng.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/nodulusteam/-methodus-throng/context:javascript)
+
 ## Throng
 
 **Throng** decorators enable *caching & throttling* of class methods in your app.
@@ -47,8 +51,13 @@ export class TestClass{
 ```
 
 
-### **@Cache**( **ttlTime**: *number*, **reloadThrottleLimit**: *number*, **keyLength**?: *number* | Function, **setCacheFunction**?: *Function*)
-
+ ```javascript
+@Cache( ttlTime: number, 
+        reloadThrottleLimit: number,
+        keyLength?: number | Function, 
+        setCacheFunction?: Function,
+        filterCacheFunction?: Function )
+```
 #### ttlTime
 Time in seconds until records expire.
 
@@ -65,6 +74,18 @@ the return value of the function will be stored in the cache, if `false` is retu
 ```javascript
 @Cache(120, 2, ,2 , (data)=>{ return somenewData }) 
     public async cacheMethod(key1:string, key2:string: ){
+        /// function code
+        return;
+    }
+
+```
+
+#### filterCacheFunction
+This function will be called before the cache item check, if it return false, the entire cache operation will be skipped (no-cache)
+
+```javascript
+@Cache(120, 2, 2 ,null,  (args)=>{ return args[2] // arg2 is the 3 argument of the decorated function }) 
+    public async cacheMethod(key1:string, key2:string, useCache: boolean ){
         /// function code
         return;
     }

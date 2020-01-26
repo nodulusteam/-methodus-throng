@@ -82,93 +82,43 @@ export function Cache(ttl: number,
             let finalKey = ''
             if (typeof keyLength === 'number') {
                 keyArgs = keyArgs.slice(0, keyLength);
-                finalKey =  keyArgs.join('-');
-            }else if(typeof keyLength === 'function'){
+                finalKey = keyArgs.join('-');
+            } else if (typeof keyLength === 'function') {
                 finalKey = keyLength(args);
-            }else{
-                finalKey =  keyArgs.join('-');
+            } else {
+                finalKey = keyArgs.join('-');
             }
 
             let shouldCache = true;
+            let shouldLook = true
 
+            //when filtered
             if (filterCacheFunction && typeof filterCacheFunction === 'function') {
                 debug.info(`applying filterCacheFunction ${propertyKey}`);
-                shouldCache = filterCacheFunction(args);
-                debug.info(`${propertyKey}  skipping cache ${!shouldCache}`);
+                shouldLook = filterCacheFunction(args);
+                debug.info(`${propertyKey}  skipping cache ${!shouldLook}`);
             }
 
-            if (shouldCache) {
-                debug.info(`${propertyKey}::args -> ${JSON.stringify(keyArgs)}`);
+            debug.info(`${propertyKey}::args -> ${JSON.stringify(keyArgs)}`);
 
-                let hash = crypto.createHash('md5').update(finalKey).digest('hex');
-                const key = `${propertyKey}-${hash}`;
-                debug.info(`Getting key ${key}`);
+            let hash = crypto.createHash('md5').update(finalKey).digest('hex');
+            const key = `${propertyKey}-${hash}`;
+            debug.info(`Getting key ${key}`);
 
-                let cacheResult: CacheItem | undefined = undefined;
+            let cacheResult: CacheItem | undefined = undefined;
+
+            if (shouldLook) {
                 try {
                     cacheResult = memoryCache.get(key);
                 } catch (error) {
                     debug.info(`error getting from cache`);
                     debug.error(error);
                 }
+            }
 
-                if (!cacheResult || !cacheResult.value) {
-                    debug.info(`Cache empty for  cache key ${key}`);
-                    debug.info(`applying method ${propertyKey}`);
-                    let result = originalMethod.apply(_self, args);
-                    //
-                    if (result.then) {
-                        debug.info(`resolving promise ${propertyKey}`);
-                        try {
-                            result = await result;
-                        } catch (error) {
-                            debug.error(error);
-                            throw (error);
-                        }
-
-                    }
-
-                    debug.info(`method ${propertyKey} completed`);
-                    debug.info(`set to cache ${key}`);
-
-
-                    if (setCacheFunction && typeof setCacheFunction === 'function') {
-                        debug.info(`applying setCacheFunction ${propertyKey}`);
-                        shouldCache = setCacheFunction(args, result);
-                    }
-
-                    if (result && shouldCache) {
-                        const existing = memoryCache.get(key);
-                        let hitCounter = 1;
-                        if (existing) {
-                            hitCounter = existing.hits;
-                        }
-
-                        memoryCache.set(key, {
-                            exec: valueFunction.bind(_self),
-                            args: args,
-                            value: result,
-                            limiter: limiter,
-                            hits: hitCounter
-                        }, ttl);
-
-                        debug.info(`set to cache ${key} Ok`);
-                    } else {
-                        debug.info(`not setting to cache ${key} False`);
-                    }
-
-                    return result;
-                } else {
-                    debug.info(`Got record for cache ${key}`);
-                    debug.info(`increment hits. current value:  ${cacheResult.hits}`);
-                    cacheResult.hits++;
-                    return cacheResult.value;
-                }
-            }else{
-
-                debug.info(`Cache override applied for ${finalKey}`);
+            if (!cacheResult || !cacheResult.value) {
+                debug.info(`Cache empty for  cache key ${key}`);
                 debug.info(`applying method ${propertyKey}`);
-                
                 let result = originalMethod.apply(_self, args);
                 //
                 if (result.then) {
@@ -181,9 +131,39 @@ export function Cache(ttl: number,
                     }
 
                 }
-                return result;
-            }
 
+                debug.info(`method ${propertyKey} completed , set to cache ${key}`);
+                if (setCacheFunction && typeof setCacheFunction === 'function') {
+                    debug.info(`applying setCacheFunction ${propertyKey}`);
+                    shouldCache = setCacheFunction(args, result);
+                }
+
+                if (result && shouldCache) {
+                    const existing = memoryCache.get(key);
+                    let hitCounter = 1;
+                    if (existing) {
+                        hitCounter = existing.hits;
+                    }
+
+                    memoryCache.set(key, {
+                        exec: valueFunction.bind(_self),
+                        args: args,
+                        value: result,
+                        limiter: limiter,
+                        hits: hitCounter
+                    }, ttl);
+
+                    debug.info(`set to cache ${key} Ok`);
+                } else {
+                    debug.info(`not setting to cache ${key} False`);
+                }
+                return result;
+            } else {
+                debug.info(`Got record for cache ${key}`);
+                debug.info(`increment hits. current value:  ${cacheResult.hits}`);
+                cacheResult.hits++;
+                return cacheResult.value;
+            }
         };
         descriptor.value = valueFunction;
         return descriptor;

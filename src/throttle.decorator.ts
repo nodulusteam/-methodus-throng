@@ -49,7 +49,7 @@ export function Throttle(limit: number) {
             debug.info(`${propertyKey}:: >> limits pendingCount:(${limiter.pendingCount}) , activeCount:(${limiter.activeCount})`);
 
             const _self = this;
-            const result = await new Promise(async (resolve, reject) => {
+            return new Promise(async (resolve, reject) => {
                 limiter(async () => {
                     debug.info(`${propertyKey}::executing`);
                     let functionResult = originalMethod.apply(_self, args);
@@ -66,8 +66,7 @@ export function Throttle(limit: number) {
 
                     resolve(functionResult);
                 });
-            });
-            return result;
+            });             
         };
         descriptor.value = value;
         return descriptor;

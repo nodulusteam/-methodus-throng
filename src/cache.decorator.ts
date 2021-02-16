@@ -12,8 +12,6 @@ if (debugInstance.enabled) {
     debug = new Logger();
 }
 export const cacheLog = debug;
-// const debug = new Logger('methodus:throng:cache');
-
 
 const crypto = require('crypto');
 const Limit = require('p-limit');
@@ -40,7 +38,7 @@ memoryCache.on('expired', async (key: string, value: CacheItem) => {
     if (CACHE_RELOAD_ON_EXPIRE) {
         value.limiter(async () => {
             debug.info(`executing refresh at: ${new Date()}`);
-            return await value.exec(...value.args);
+            return value.exec(...value.args);
         });
     }
 });

@@ -79,7 +79,7 @@ export function Cache(ttl: number,
         const valueFunction = async function (...args: any[]) {
             const _self = this;
             let keyArgs = args;
-            let finalKey = ''
+            let finalKey = '';
             if (typeof keyLength === 'number') {
                 keyArgs = keyArgs.slice(0, keyLength);
                 finalKey = keyArgs.join('-');
@@ -90,7 +90,7 @@ export function Cache(ttl: number,
             }
 
             let shouldCache = true;
-            let shouldLook = true
+            let shouldLook = true;
 
             //when filtered
             if (filterCacheFunction && typeof filterCacheFunction === 'function') {
